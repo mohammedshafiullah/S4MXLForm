@@ -73,7 +73,7 @@ var dict = Dictionary<String,[SessionModel]>()
                             let startTime = StartTimeFormatter.string(from: date)
                             currentTime = StartTimeFormatter.string(from: Date())
 
-                            sessionModelObj.ActivityDateTime = activityStartDate
+                            sessionModelObj.ActivityStartDateTime = activityStartDate
                             sessionModelObj.ActivityStartDate = dateStamp
                             sessionModelObj.ActivityStartTime = startTime
                         }
@@ -96,11 +96,14 @@ var dict = Dictionary<String,[SessionModel]>()
                             StartTimeFormatter.timeZone = TimeZone.current
                             let startTime = StartTimeFormatter.string(from: date)
                             
-                            sessionModelObj.ActivityDateTime = activityEndDate
+                            sessionModelObj.ActivityEndDateTime = activityEndDate
                             sessionModelObj.ActivityEndDate = dateStamp
                             sessionModelObj.ActivityEndTime = startTime
                         }
-                        
+                        if let SessionId = sessionDict.value(forKey: "SessionId")
+                        {
+                            sessionModelObj.SessionId = SessionId as! Int
+                        }
                         if let Location = sessionDict.value(forKey: "Location")
                         {
                             sessionModelObj.Location = Location as! String
@@ -109,6 +112,14 @@ var dict = Dictionary<String,[SessionModel]>()
                         {
                             sessionModelObj.Subject = Subject as! String
                         }
+                        if let ActivityType = sessionDict.value(forKey: "ActivityType")
+                        {
+                            sessionModelObj.ActivityType = ActivityType as! String
+                        }
+                        if let PrimaryContactName = sessionDict.value(forKey: "PrimaryContactName")
+                        {
+                            sessionModelObj.PrimaryContactName = PrimaryContactName as! String
+                        }
                         if let Owner = sessionDict.value(forKey: "Owner")
                         {
                             sessionModelObj.Owner = Owner as! String
@@ -116,6 +127,18 @@ var dict = Dictionary<String,[SessionModel]>()
                         if let AccountName = sessionDict.value(forKey: "AccountName")
                         {
                             sessionModelObj.AccountName = AccountName as! String
+                        }
+                        if let LeadName = sessionDict.value(forKey: "LeadName")
+                        {
+                            sessionModelObj.LeadName = LeadName as! String
+                        }
+                        if let OpportunityName = sessionDict.value(forKey: "OpportunityName")
+                        {
+                            sessionModelObj.OpportunityName = OpportunityName as! String
+                        }
+                        if let Description = sessionDict.value(forKey: "Description")
+                        {
+                            sessionModelObj.Description = Description as! String
                         }
                         // getting the avengers tag array from json and converting it to NSArray
                         if let inviteesArray = sessionDict.value(forKey: "invitees") as? NSArray
@@ -255,12 +278,14 @@ var dict = Dictionary<String,[SessionModel]>()
             cell.topViewHeightC.constant = 0
 
         }
+        cell.selectionStyle = .none
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
-        let detailSessionViewController = self.storyboard?.instantiateViewController(withIdentifier: "detailSessionViewController") as! DetailScreenViewController
+        let detailSessionViewController = self.storyboard?.instantiateViewController(withIdentifier: "AssignmentDetailViewController") as! AssignmentDetailViewController
+        detailSessionViewController.sessionObj = dict[sectionsArray[indexPath.section]]![indexPath.row]
         self.navigationController?.pushViewController(detailSessionViewController, animated: true)
     }
 }

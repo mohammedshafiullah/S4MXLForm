@@ -11,20 +11,48 @@ import UIKit
 class AddInviteeViewController: UIViewController {
     
    public var allInviteeArray:[InviteeModel]!
-    
-    var selectedInviteeArray:[InviteeModel]!
-
+     var selectedInviteeArray:[InviteeModel]!
     var cell : AddTableViewTableViewCell!
-    
-   
     @IBOutlet var addInviteesTableView: UITableView!
-    
+
+    let appdelegateObj = UIApplication.shared.delegate as! AppDelegate
+   // var assignnmentViewController = AssignmentDetailViewController()
+
     override func viewDidLoad()
     {
         super.viewDidLoad()
         startParsing()
+        let addButton = UIButton(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+        addButton.setTitle("Add", for: .normal)
+        addButton.showsTouchWhenHighlighted = true
+        addButton.setTitleColor(UIColor.blue, for: .normal)
+        addButton.addTarget(self,action:#selector(AddClicked),for:.touchUpInside)
+        let rightBtn = UIBarButtonItem(customView: addButton)
+        navigationItem.rightBarButtonItem = rightBtn
+
 
         // Do any additional setup after loading the view.
+    }
+
+    func AddClicked(sender:UIButton)
+    {
+        selectedInviteeArray = [InviteeModel]()
+        for  sel in allInviteeArray
+        {
+           // print (sel.name ,sel.isSelected)
+            if(sel.isSelected)
+            {
+                selectedInviteeArray.append(sel)
+            }
+        }
+
+appdelegateObj.assignmentDetailViewControllerInAppdelegate.selectedInviteeArrayInSession =       selectedInviteeArray
+
+appdelegateObj.assignmentDetailViewControllerInAppdelegate.selectedInviteeArrayInSession  = [InviteeModel]()
+     print (selectedInviteeArray[0].name)
+ print(appdelegateObj.assignmentDetailViewControllerInAppdelegate.selectedInviteeArrayInSession)
+
+    self.navigationController?.popViewController(animated: true)
     }
 
     override func didReceiveMemoryWarning() {
@@ -44,7 +72,9 @@ class AddInviteeViewController: UIViewController {
             if let inviteesArray = jsonObj!.value(forKey: "invitees") as? NSArray
             {
                 allInviteeArray = [InviteeModel]()
+                
                 var inviteeObj = InviteeModel()
+
                 //looping through all the elements
                 
                 for invitee in inviteesArray {
@@ -79,63 +109,44 @@ class AddInviteeViewController: UIViewController {
             }
         }
     }
-    
-    
-    /////Tableview Delegates//////
-    
-    
-    func numberOfSectionsInTableView(_ tableView: UITableView) -> Int
-    {
-        return 1
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
-    {
-        //make sure you use the relevant array sizes
-        return allInviteeArray.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAtIndexPath indexPath: IndexPath) -> UITableViewCell
-    {
-        cell  = tableView.dequeueReusableCell(withIdentifier: "AddInviteeCell") as! AddTableViewTableViewCell
-        
-        if(cell == nil)
-            
-        {
-            cell = Bundle.main.loadNibNamed("AddInviteeCell", owner: self, options: nil)?[0] as! AddTableViewTableViewCell;
-            
+
+
+
+}
+    extension AddInviteeViewController : UITableViewDelegate,UITableViewDataSource {
+
+        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+            return allInviteeArray.count
         }
-        cell.inviteeName.text = self.allInviteeArray[indexPath.row].name as String
-        
-         //  cell!.checkMarkButtonInvitees.imageView?.image = UIImage(named: "")
-      
-        return cell as AddTableViewTableViewCell
-    }
-    
-    
-    
- func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
- {
-   //inviteeCheck.png
-    //let cell = tableView.cellForRow(at: indexPath) as! AddTableViewTableViewCell
-    
-    selectedInviteeArray.append(allInviteeArray[indexPath.row])
-    
-    
+
+        func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "AddInviteeCell", for: indexPath) as! AddTableViewTableViewCell
+            update(cell: cell, inviteeItem: allInviteeArray[indexPath.row])
+            return cell
+        }
+
+        func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+            return 50
+        }
+
+
+        func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+            allInviteeArray[indexPath.row].isSelected = !allInviteeArray[indexPath.row].isSelected
+            addInviteesTableView.reloadData()
+        }
+
+        func update(cell: AddTableViewTableViewCell, inviteeItem: InviteeModel) {
+            cell.addInviteeNameLabelObj.text = inviteeItem.name
+            cell.selectionStyle = .none
+            cell.checkMarkImageViewObj.image = inviteeItem.isSelected ? #imageLiteral(resourceName: "EnableCheckBox") : #imageLiteral(resourceName: "EmptyBox")
+            cell.backgroundColor = inviteeItem.isSelected ?  UIColor.blue : UIColor.white
+
+        }
+
+
+
 }
 
-    @IBAction func addInviteeAction(_ sender: UIButton) {
-        
-        self.navigationController?.popViewController(animated: true)
-        
-        let detailScreenViewc = DetailScreenViewController ()
-        
-        //detailScreenViewc.addInviteeViewCC.allInviteeArray  = selectedInviteeArray
-        
-        
 
-    }
     
-    
-    
-}
+

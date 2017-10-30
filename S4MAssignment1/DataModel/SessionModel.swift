@@ -11,18 +11,23 @@ import Foundation
 class SessionModel: NSObject
 {
     internal var SessionId = Int()
-    internal var ActivityDateTime = String()
+    internal var ActivityStartDateTime = String()
+    internal var ActivityEndDateTime = String()
+
     internal var ActivityStartDate = String()
     internal var ActivityEndDate = String()
     internal var ActivityStartTime = String()
     internal var ActivityEndTime = String()
-    internal var phoneNumber = String()
-    internal var jobTitle = String()
+    internal var PrimaryContactName = String()
+    internal var JobTitle = String()
     internal var Location = String()
     internal var Subject = String()
     internal var Owner = String()
     internal var AccountName = String()
-    
+    internal var ActivityType = String()
+    internal var OpportunityName = String()
+    internal var LeadName = String()
+    internal var Description = String()    
     internal var IsCurrentOrUpcoming = Bool()
 
 

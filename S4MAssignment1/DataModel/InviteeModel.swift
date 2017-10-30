@@ -15,7 +15,7 @@ class InviteeModel: NSObject
     internal var email = String()
     internal var phoneNumber = String()
     internal var jobTitle = String()
-
+    internal var isSelected = false
  
     /**
      Default Constructor
@@ -25,10 +25,8 @@ class InviteeModel: NSObject
     {
         
     }
-    
-    /**
-     Mapping Response keys to variables
-     - parameter map: Map
-     */
-    
+
 }
+
+
+

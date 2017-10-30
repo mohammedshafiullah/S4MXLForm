@@ -1,0 +1,3 @@
+[submodule "XLForm"]
+	path = XLForm
+	url = https://github.com/xmartlabs/XLForm.git
